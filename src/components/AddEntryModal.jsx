@@ -1,135 +1,137 @@
-// Modal zum hinzufügen
-
-import { useState } from 'react';
-import { addEntry, checkEntryExists } from '../utils/localStorage';
+import { useState } from "react";
+import { addEntry, checkEntryExists } from "../utils/localStorage";
 
 /**
- * FR006: Add Entry Modal Component
- * FR007: Form Fields (Title, Date, Image URL, Content)
- * FR009: One-Entry-Per-Day Check
- * FR010: Form Validation
+ * FR006: Add Entry Modal mit modernem Design
  */
 function AddEntryModal({ isOpen, onClose, onEntryAdded }) {
-  // Form State für alle Felder
   const [formData, setFormData] = useState({
-    title: '',
-    date: '',
-    imageUrl: '',
-    content: ''
+    title: "",
+    date: "",
+    imageUrl: "",
+    content: "",
   });
-  
-  const [error, setError] = useState(''); // Fehlermeldungen anzeigen
 
-  // Schließt Modal nur wenn isOpen true ist
+  const [error, setError] = useState("");
+
   if (!isOpen) return null;
 
-  /**
-   * Aktualisiert Form-Daten bei Eingabe
-   */
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    // Lösche Fehler wenn User tippt
-    if (error) setError('');
+    if (error) setError("");
   };
 
-  /**
-   * FR010: Form Validation - Prüft ob alle Felder ausgefüllt sind
-   */
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError('Please enter a title');
+      setError("Please enter a title");
       return false;
     }
     if (!formData.date) {
-      setError('Please select a date');
+      setError("Please select a date");
       return false;
     }
     if (!formData.imageUrl.trim()) {
-      setError('Please enter an image URL');
+      setError("Please enter an image URL");
       return false;
     }
     if (!formData.content.trim()) {
-      setError('Please enter some content');
+      setError("Please enter some content");
       return false;
     }
     return true;
   };
 
-  /**
-   * Verarbeitet Form-Submit
-   * FR009: One-Entry-Per-Day Check
-   * FR010: Form Validation
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // FR010: Validiere alle Felder
-    if (!validateForm()) {
-      return;
-    }
 
-    // FR009: Prüfe ob bereits ein Eintrag für dieses Datum existiert
+    if (!validateForm()) return;
+
+    // FR009: One-Entry-Per-Day Check
     if (checkEntryExists(formData.date)) {
-      setError('An entry already exists for this date. Please come back tomorrow! 📅');
+      setError(
+        "An entry already exists for this date. Please come back tomorrow! 📅"
+      );
       return;
     }
 
-    // Speichere Eintrag in localStorage
     const newEntry = addEntry(formData);
-    
-    // Informiere Parent Component über neuen Eintrag
     onEntryAdded(newEntry);
-    
-    // Setze Form zurück
-    setFormData({
-      title: '',
-      date: '',
-      imageUrl: '',
-      content: ''
-    });
-    setError('');
+
+    setFormData({ title: "", date: "", imageUrl: "", content: "" });
+    setError("");
   };
 
-  /**
-   * Schließt Modal und setzt Form zurück
-   */
   const handleClose = () => {
-    setFormData({
-      title: '',
-      date: '',
-      imageUrl: '',
-      content: ''
-    });
-    setError('');
+    setFormData({ title: "", date: "", imageUrl: "", content: "" });
+    setError("");
     onClose();
   };
 
   return (
-    // Modal Overlay - FR006: Modal wird über State gesteuert
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    // Modal Overlay
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
       {/* Modal Content */}
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
         {/* Header */}
-        <div className="bg-indigo-600 text-white px-6 py-4 rounded-t-lg">
-          <h2 className="text-2xl font-bold">✨ Add New Entry</h2>
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-6 rounded-t-3xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold mb-1">✨ New Entry</h2>
+              <p className="text-indigo-100">Capture your moment</p>
+            </div>
+            <button
+              onClick={handleClose}
+              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        {/* Form - FR007: Form Fields */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Fehlermeldung */}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Error Alert */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
+            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg flex items-start gap-3 animate-shake">
+              <svg
+                className="w-6 h-6 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="font-medium">{error}</span>
             </div>
           )}
 
-          {/* FR007: Title Field */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Title Field */}
+          <div className="space-y-2">
+            <label
+              htmlFor="title"
+              className="block text-sm font-semibold text-gray-700"
+            >
               Title *
             </label>
             <input
@@ -139,13 +141,16 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded }) {
               value={formData.title}
               onChange={handleChange}
               placeholder="A wonderful day..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
             />
           </div>
 
-          {/* FR007: Date Field */}
-          <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Date Field */}
+          <div className="space-y-2">
+            <label
+              htmlFor="date"
+              className="block text-sm font-semibold text-gray-700"
+            >
               Date *
             </label>
             <input
@@ -154,14 +159,17 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded }) {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              max={new Date().toISOString().split('T')[0]} // Verhindert Zukunftsdaten
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              max={new Date().toISOString().split("T")[0]}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
             />
           </div>
 
-          {/* FR007: Image URL Field */}
-          <div>
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Image URL Field */}
+          <div className="space-y-2">
+            <label
+              htmlFor="imageUrl"
+              className="block text-sm font-semibold text-gray-700"
+            >
               Image URL *
             </label>
             <input
@@ -171,25 +179,26 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded }) {
               value={formData.imageUrl}
               onChange={handleChange}
               placeholder="https://example.com/image.jpg"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
             />
             {formData.imageUrl && (
-              <div className="mt-2">
-                <img 
-                  src={formData.imageUrl} 
-                  alt="Preview" 
-                  className="w-full h-32 object-cover rounded"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
+              <div className="mt-3 rounded-xl overflow-hidden border-2 border-gray-200">
+                <img
+                  src={formData.imageUrl}
+                  alt="Preview"
+                  className="w-full h-48 object-cover"
+                  onError={(e) => (e.target.style.display = "none")}
                 />
               </div>
             )}
           </div>
 
-          {/* FR007: Content Field */}
-          <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Content Field */}
+          <div className="space-y-2">
+            <label
+              htmlFor="content"
+              className="block text-sm font-semibold text-gray-700"
+            >
               Content *
             </label>
             <textarea
@@ -198,8 +207,8 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded }) {
               value={formData.content}
               onChange={handleChange}
               placeholder="Write about your day..."
-              rows="5"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              rows="6"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none resize-none"
             />
           </div>
 
@@ -208,13 +217,13 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded }) {
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105 active:scale-95"
             >
               Add Entry
             </button>
