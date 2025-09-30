@@ -1,0 +1,1 @@
+// Einzelne Tagebuch-Karte 
