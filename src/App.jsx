@@ -7,6 +7,7 @@ import EditEntryModal from "./components/EditEntryModal";
 import EntryDetailModal from "./components/EntryDetailModal";
 import Toast from "./components/Toast";
 import ConfirmDialog from "./components/ConfirmDialog";
+import QuoteOfTheDay from "./components/QuoteOfTheDay";
 
 /**
  * Captain's Log - Star Trek Themed Personal Journal
@@ -26,7 +27,7 @@ function App() {
     entryTitle: "",
   });
 
-  // Berechne Stardate (Star Trek inspiriert)
+  // Berechne Sternenzeit (Star Trek inspiriert und etwas angepasst, wie in den Filmen auch hier das englische Format bevorzugt)
   const calculateStardate = () => {
     const now = new Date();
     const base = new Date("2323-01-01").getTime();
@@ -64,7 +65,7 @@ function App() {
     );
     setShowAddModal(false);
     setPrefilledDate(null);
-    showToast("Log entry recorded successfully! 🚀", "success");
+    showToast("Log-Eintrag aufgezeichnet! 🚀", "Erledigt");
   };
 
   const handleEditClick = (entry, e) => {
@@ -82,7 +83,7 @@ function App() {
     );
     setShowEditModal(false);
     setEditingEntry(null);
-    showToast("Log entry updated successfully! ✨", "success");
+    showToast("Log-Eintrag aktualisiert! ✨", "Erledigt");
   };
 
   const handleDeleteClick = (entry, e) => {
@@ -101,10 +102,10 @@ function App() {
       setEntries((prev) =>
         prev.filter((entry) => entry.id !== confirmDialog.entryId)
       );
-      showToast("Log entry deleted from database! 🗑️", "success");
+      showToast("Log-Eintrag wurde gelöscht! 🗑️", "Erledigt");
       setShowDetailModal(false);
     } else {
-      showToast("Error: Unable to delete log entry", "error");
+      showToast("Error: Eintrag kann nicht gelöscht werden", "Fehler");
     }
 
     setConfirmDialog({ isOpen: false, entryId: null, entryTitle: "" });
@@ -121,10 +122,10 @@ function App() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Starfield Background */}
+      {/* Starfield Background Komponente */}
       <Starfield />
 
-      {/* LCARS Header */}
+      {/* Star Trek Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-gradient-to-r from-[#0a0e27]/95 via-[#1a1a3e]/95 to-[#0a0e27]/95 border-b-4 border-[#ff9c00] shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -170,6 +171,8 @@ function App() {
           </div>
         </div>
       </header>
+      {/* Zitat des Tages ala Star Trek */}
+      <QuoteOfTheDay />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -185,7 +188,7 @@ function App() {
           <div className="mt-16">
             <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl">
               <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase">
-                Missions Archiv
+                Logbuch Archiv
               </h2>
               <p className="text-[#9999ff] mt-2 font-medium">
                 {entries.length} {entries.length === 1 ? "ENTRY" : "ENTRIES"}{" "}

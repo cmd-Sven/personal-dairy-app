@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import { addEntry, checkEntryExists } from "../utils/localStorage";
+import MoodSelector from "./MoodSelector";
 
-/**
- * Add Entry Modal - Star Trek LCARS Style
- * New Log Entry Recording Interface
- */
 function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
   const [formData, setFormData] = useState({
     title: "",
     date: "",
     imageUrl: "",
     content: "",
+    mood: "",
   });
 
   const [error, setError] = useState("");
@@ -35,21 +33,34 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
     if (error) setError("");
   };
 
+  //  Mood Change Handler - im Star Trek Stil natürlich
+  const handleMoodChange = (moodId) => {
+    setFormData((prev) => ({
+      ...prev,
+      mood: moodId,
+    }));
+    if (error) setError("");
+  };
+
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError("ERROR: Log Eintrag: Titel wird benötigt!");
+      setError("ERROR: Titel wird benötigt!");
       return false;
     }
     if (!formData.date) {
-      setError("ERROR: Sternenzeit ist nicht gesetzt!");
+      setError("ERROR: Sternzeit wird benötigt!");
       return false;
     }
     if (!formData.imageUrl.trim()) {
-      setError("ERROR: Viuelles Datenelement fehlt");
+      setError("ERROR: Captian, ein Bild wird benötigt!");
       return false;
     }
     if (!formData.content.trim()) {
-      setError("ERROR: Log Beschreibung fehlt!");
+      setError("ERROR: Log entry content required");
+      return false;
+    }
+    if (!formData.mood) {
+      setError("ERROR: Captain's mood status required");
       return false;
     }
     return true;
@@ -61,19 +72,21 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
     if (!validateForm()) return;
 
     if (checkEntryExists(formData.date)) {
-      setError("ALERT: Log Eintrag existiert bereits!");
+      setError(
+        "ALERT: Log entry already exists for this stardate. Database conflict detected."
+      );
       return;
     }
 
     const newEntry = addEntry(formData);
     onEntryAdded(newEntry);
 
-    setFormData({ title: "", date: "", imageUrl: "", content: "" });
+    setFormData({ title: "", date: "", imageUrl: "", content: "", mood: "" });
     setError("");
   };
 
   const handleClose = () => {
-    setFormData({ title: "", date: "", imageUrl: "", content: "" });
+    setFormData({ title: "", date: "", imageUrl: "", content: "", mood: "" });
     setError("");
     onClose();
   };
@@ -86,10 +99,10 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
           <div className="flex items-center justify-between relative z-10">
             <div>
               <h2 className="text-4xl font-black tracking-wider mb-1 uppercase">
-                NEUER LOG EINTRAG
+                NEW LOG ENTRY
               </h2>
               <p className="text-sm font-bold tracking-widest uppercase opacity-80">
-                CAPTAIN'S LOG TAGEBUCH •
+                CAPTAIN'S PERSONAL LOG • RECORDING ACTIVE
               </p>
             </div>
             <button
@@ -144,7 +157,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="title"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              LOG EINTRAG TITEL *
+              LOG ENTRY TITLE *
             </label>
             <input
               type="text"
@@ -163,7 +176,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="date"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              STERNENZEIT *
+              STARDATE *
             </label>
             <input
               type="date"
@@ -176,13 +189,19 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
             />
           </div>
 
+          {/* NEU: Mood Selector */}
+          <MoodSelector
+            selectedMood={formData.mood}
+            onMoodChange={handleMoodChange}
+          />
+
           {/* Image URL Field */}
           <div className="space-y-3">
             <label
               htmlFor="imageUrl"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              VISUELLER DATEN LINK *
+              VISUAL DATA LINK *
             </label>
             <input
               type="url"
@@ -202,7 +221,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
                   onError={(e) => (e.target.style.display = "none")}
                 />
                 <div className="absolute top-3 left-3 px-3 py-1 bg-[#ff9c00] text-[#0a0e27] text-xs font-black uppercase tracking-wider border-2 border-[#ffcc99]">
-                  VORSCHAU
+                  PREVIEW
                 </div>
               </div>
             )}
@@ -214,7 +233,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="content"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              LOG EINTRAG INHALT *
+              LOG ENTRY CONTENT *
             </label>
             <textarea
               id="content"
@@ -234,13 +253,13 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               onClick={handleClose}
               className="flex-1 px-8 py-4 border-4 border-[#9999ff]/50 text-[#9999ff] rounded-none font-black text-lg uppercase tracking-wider hover:bg-[#9999ff]/10 transition-all hover:border-[#9999ff] hover:scale-105"
             >
-              ABBRUCH
+              ABORT
             </button>
             <button
               type="submit"
               className="flex-1 px-8 py-4 bg-gradient-to-r from-[#ff9c00] to-[#cc6666] text-[#0a0e27] rounded-none font-black text-lg uppercase tracking-wider shadow-2xl hover:shadow-[#ff9c00]/80 transition-all hover:scale-105 active:scale-95 border-4 border-[#ffcc99] relative overflow-hidden"
             >
-              <span className="relative z-10">LOG AUFZEICHNEN</span>
+              <span className="relative z-10">RECORD LOG</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
             </button>
           </div>

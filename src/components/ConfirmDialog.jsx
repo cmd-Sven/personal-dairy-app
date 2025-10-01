@@ -6,22 +6,22 @@ function ConfirmDialog({
   isOpen,
   title,
   message,
-  confirmText = "CONFIRM",
-  cancelText = "CANCEL",
+  confirmText = "BESTÄTIGT",
+  cancelText = "ABBRUCH",
   onConfirm,
   onCancel,
-  type = "danger",
+  type = "gefahr",
 }) {
   if (!isOpen) return null;
 
   const colors = {
-    danger: {
+    gefahr: {
       gradient: "from-[#cc6666] to-[#ff6666]",
       border: "border-[#ff9999]",
       button: "from-[#cc6666] to-[#ff6666]",
       buttonBorder: "border-[#ffcccc]",
     },
-    warning: {
+    warnung: {
       gradient: "from-[#ff9c00] to-[#ffcc99]",
       border: "border-[#ffcc99]",
       button: "from-[#ff9c00] to-[#ffcc99]",
@@ -43,9 +43,9 @@ function ConfirmDialog({
         className="bg-gradient-to-br from-[#1a1a3e] to-[#0a0e27] rounded-none shadow-2xl max-w-lg w-full border-4 ${currentColors.border} animate-slideUp relative overflow-hidden"
         style={{
           borderColor:
-            type === "danger"
+            type === "gefahr"
               ? "#ff9999"
-              : type === "warning"
+              : type === "warnung"
               ? "#ffcc99"
               : "#ccccff",
         }}
@@ -53,20 +53,20 @@ function ConfirmDialog({
         {/* Alert Header */}
         <div
           className={`bg-gradient-to-r ${currentColors.gradient} text-${
-            type === "danger" ? "white" : "[#0a0e27]"
+            type === "gefahr" ? "white" : "[#0a0e27]"
           } px-8 py-6 border-b-4 relative overflow-hidden`}
           style={{
             borderColor:
-              type === "danger"
+              type === "gefahr"
                 ? "#ff9999"
-                : type === "warning"
+                : type === "warnung"
                 ? "#ffcc99"
                 : "#ccccff",
           }}
         >
           <div className="flex items-center gap-4 relative z-10">
             <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
-              {type === "danger" && (
+              {type === "gefahr" && (
                 <svg
                   className="w-8 h-8"
                   fill="currentColor"
@@ -79,7 +79,7 @@ function ConfirmDialog({
                   />
                 </svg>
               )}
-              {type === "warning" && (
+              {type === "warnung" && (
                 <svg
                   className="w-8 h-8"
                   fill="currentColor"
@@ -113,7 +113,7 @@ function ConfirmDialog({
 
           {/* Alert animation lines */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent data-stream"></div>
-          {type === "danger" && (
+          {type === "gefahr" && (
             <>
               <div className="absolute top-0 left-0 w-full h-1 bg-white/30 animate-pulse"></div>
               <div className="absolute bottom-0 left-0 w-full h-1 bg-white/30 animate-pulse"></div>
@@ -127,9 +127,9 @@ function ConfirmDialog({
             className="mb-8 p-6 bg-[#0a0e27]/50 border-l-8 rounded-none backdrop-blur-sm"
             style={{
               borderColor:
-                type === "danger"
+                type === "gefahr"
                   ? "#cc6666"
-                  : type === "warning"
+                  : type === "warnung"
                   ? "#ff9c00"
                   : "#9999ff",
             }}
@@ -139,12 +139,12 @@ function ConfirmDialog({
             </p>
           </div>
 
-          {/* Warning indicator */}
-          {type === "danger" && (
+          {/* warnung indicator */}
+          {type === "gefahr" && (
             <div className="mb-6 flex items-center gap-3 text-[#cc6666]">
               <div className="w-3 h-3 bg-[#cc6666] rounded-full animate-pulse"></div>
               <span className="text-sm font-black uppercase tracking-widest">
-                THIS ACTION CANNOT BE UNDONE
+                DIESE AKTION KANN NICHT RÜCKGÄNGIG GEMACHT WERDEN
               </span>
             </div>
           )}
@@ -163,12 +163,12 @@ function ConfirmDialog({
             className={`flex-1 px-8 py-4 bg-gradient-to-r ${currentColors.button} rounded-none font-black text-lg uppercase tracking-wider shadow-2xl transition-all hover:scale-105 active:scale-95 border-4 relative overflow-hidden`}
             style={{
               borderColor:
-                type === "danger"
+                type === "gefahr"
                   ? "#ffcccc"
-                  : type === "warning"
+                  : type === "warnung"
                   ? "#ffcc99"
                   : "#ccccff",
-              color: type === "danger" ? "white" : "#0a0e27",
+              color: type === "gefahr" ? "white" : "#0a0e27",
             }}
           >
             <span className="relative z-10">{confirmText}</span>
