@@ -1,18 +1,33 @@
 import { useState, useEffect } from 'react';
-import { loadEntries } from './utils/localStorage';
+import { loadEntries, deleteEntry } from './utils/localStorage';
 import AddEntryModal from './components/AddEntryModal';
+import EditEntryModal from './components/EditEntryModal';
 import EntryDetailModal from './components/EntryDetailModal';
+import Toast from './components/Toast';
+import ConfirmDialog from './components/ConfirmDialog';
 
 /**
  * Haupt-App Component für Personal Diary
- * Modernes Design mit Tailwind v4
+ * Mit Delete, Edit und Toast Notifications
  */
 function App() {
   // FR005: State & Effects Management
   const [entries, setEntries] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
+  const [editingEntry, setEditingEntry] = useState(null);
+  
+  // Toast State
+  const [toast, setToast] = useState(null);
+  
+  // Confirm Dialog State
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    entryId: null,
+    entryTitle: ''
+  });
 
   // FR012: Load entries on startup
   useEffect(() => {
@@ -24,17 +39,100 @@ function App() {
     setEntries(sortedEntries);
   }, []);
 
+  /**
+   * Zeigt eine Toast Notification an
+   */
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+  };
+
+  /**
+   * Schließt die Toast Notification
+   */
+  const closeToast = () => {
+    setToast(null);
+  };
+
+  /**
+   * FR006: Öffnet das Modal zum Hinzufügen eines neuen Eintrags
+   */
   const handleAddEntry = () => {
     setShowAddModal(true);
   };
 
+  /**
+   * Callback wenn neuer Eintrag hinzugefügt wurde
+   */
   const handleEntryAdded = (newEntry) => {
     setEntries(prev => [newEntry, ...prev].sort((a, b) => 
       new Date(b.date) - new Date(a.date)
     ));
     setShowAddModal(false);
+    showToast('Entry added successfully! 🎉', 'success');
   };
 
+  /**
+   * Öffnet Edit Modal für einen Eintrag
+   */
+  const handleEditClick = (entry, e) => {
+    e.stopPropagation(); // Verhindert dass Detail Modal auch öffnet
+    setEditingEntry(entry);
+    setShowEditModal(true);
+    setShowDetailModal(false); // Schließe Detail Modal falls offen
+  };
+
+  /**
+   * Callback wenn Eintrag aktualisiert wurde
+   */
+  const handleEntryUpdated = (updatedEntry) => {
+    setEntries(prev => 
+      prev.map(entry => entry.id === updatedEntry.id ? updatedEntry : entry)
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+    );
+    setShowEditModal(false);
+    setEditingEntry(null);
+    showToast('Entry updated successfully! ✏️', 'success');
+  };
+
+  /**
+   * Öffnet Confirm Dialog zum Löschen
+   */
+  const handleDeleteClick = (entry, e) => {
+    e.stopPropagation(); // Verhindert dass Detail Modal auch öffnet
+    setConfirmDialog({
+      isOpen: true,
+      entryId: entry.id,
+      entryTitle: entry.title
+    });
+  };
+
+  /**
+   * Bestätigt und führt das Löschen aus
+   */
+  const confirmDelete = () => {
+    const success = deleteEntry(confirmDialog.entryId);
+    
+    if (success) {
+      setEntries(prev => prev.filter(entry => entry.id !== confirmDialog.entryId));
+      showToast('Entry deleted successfully! 🗑️', 'success');
+      setShowDetailModal(false); // Schließe Detail Modal falls offen
+    } else {
+      showToast('Failed to delete entry. Please try again.', 'error');
+    }
+    
+    setConfirmDialog({ isOpen: false, entryId: null, entryTitle: '' });
+  };
+
+  /**
+   * Bricht das Löschen ab
+   */
+  const cancelDelete = () => {
+    setConfirmDialog({ isOpen: false, entryId: null, entryTitle: '' });
+  };
+
+  /**
+   * FR014: Öffnet Detail-Modal für einen Eintrag
+   */
   const handleCardClick = (entry) => {
     setSelectedEntry(entry);
     setShowDetailModal(true);
@@ -108,21 +206,45 @@ function App() {
               {entries.map(entry => (
                 <article
                   key={entry.id}
-                  onClick={() => handleCardClick(entry)}
                   className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-2"
                 >
                   {/* FR013: Preview Image mit Overlay */}
-                  <div className="relative h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                  <div 
+                    className="relative h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200"
+                    onClick={() => handleCardClick(entry)}
+                  >
                     <img
                       src={entry.imageUrl}
                       alt={entry.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Action Buttons Overlay */}
+                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <button
+                        onClick={(e) => handleEditClick(entry, e)}
+                        className="p-2 bg-white/90 hover:bg-white rounded-lg shadow-lg transition-all hover:scale-110"
+                        title="Edit entry"
+                      >
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteClick(entry, e)}
+                        className="p-2 bg-white/90 hover:bg-white rounded-lg shadow-lg transition-all hover:scale-110"
+                        title="Delete entry"
+                      >
+                        <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
                   {/* FR013: Card Content */}
-                  <div className="p-6">
+                  <div className="p-6" onClick={() => handleCardClick(entry)}>
                     {/* Date Badge */}
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium mb-3">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -167,11 +289,44 @@ function App() {
         onEntryAdded={handleEntryAdded}
       />
 
+      <EditEntryModal 
+        entry={editingEntry}
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingEntry(null);
+        }}
+        onEntryUpdated={handleEntryUpdated}
+      />
+
       <EntryDetailModal 
         entry={selectedEntry}
         isOpen={showDetailModal}
         onClose={() => setShowDetailModal(false)}
+        onEdit={handleEditClick}
+        onDelete={handleDeleteClick}
       />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title="Delete Entry?"
+        message={`Are you sure you want to delete "${confirmDialog.entryTitle}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={closeToast}
+        />
+      )}
     </div>
   );
 }
