@@ -1,16 +1,19 @@
 /**
- * FR014: Entry Detail Modal mit Edit/Delete Actions
+ * Entry Detail Modal - Star Trek LCARS Style
+ * Log Entry Full Display Interface
  */
 function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
   if (!isOpen || !entry) return null;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return date
+      .toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+      .toUpperCase();
   };
 
   const handleOverlayClick = (e) => {
@@ -20,35 +23,36 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
   };
 
   return (
-    // Modal Overlay
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn"
       onClick={handleOverlayClick}
     >
-      {/* Modal Content */}
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
+      <div className="bg-gradient-to-br from-[#1a1a3e] to-[#0a0e27] rounded-none shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border-4 border-[#ff9c00] animate-slideUp">
         {/* Image Header */}
-        <div className="relative h-72 md:h-96 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+        <div className="relative h-80 md:h-96 bg-gradient-to-br from-[#2a5caa] to-[#1a1a3e] overflow-hidden border-b-4 border-[#ff9c00]">
           <img
             src={entry.imageUrl}
             alt={entry.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-70"
             onError={(e) => {
               e.target.src =
-                "https://via.placeholder.com/800x600?text=Image+Not+Found";
+                "https://via.placeholder.com/800x600/2a5caa/ffcc99?text=VISUAL+DATA+UNAVAILABLE";
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e27] via-[#0a0e27]/50 to-transparent" />
+
+          {/* Hologram Effect */}
+          <div className="absolute inset-0 pointer-events-none hologram opacity-20 bg-gradient-to-b from-[#9999ff] to-transparent mix-blend-overlay"></div>
 
           {/* Action Buttons */}
           <div className="absolute top-6 right-6 flex gap-3">
             <button
               onClick={(e) => onEdit(entry, e)}
-              className="p-3 bg-white/90 hover:bg-white rounded-xl shadow-lg transition-all hover:scale-110 active:scale-95"
-              title="Edit entry"
+              className="p-4 bg-[#9999ff]/90 hover:bg-[#9999ff] rounded-none shadow-2xl transition-all hover:scale-110 active:scale-95 border-2 border-[#ccccff]"
+              title="Modify log entry"
             >
               <svg
-                className="w-6 h-6 text-blue-600"
+                className="w-7 h-7 text-[#0a0e27]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -63,11 +67,11 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             </button>
             <button
               onClick={(e) => onDelete(entry, e)}
-              className="p-3 bg-white/90 hover:bg-white rounded-xl shadow-lg transition-all hover:scale-110 active:scale-95"
-              title="Delete entry"
+              className="p-4 bg-[#cc6666]/90 hover:bg-[#cc6666] rounded-none shadow-2xl transition-all hover:scale-110 active:scale-95 border-2 border-[#ffcccc]"
+              title="Delete log entry"
             >
               <svg
-                className="w-6 h-6 text-red-600"
+                className="w-7 h-7 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -82,11 +86,11 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             </button>
             <button
               onClick={onClose}
-              className="p-3 bg-white/90 hover:bg-white rounded-xl shadow-lg transition-all hover:scale-110 active:scale-95"
+              className="p-4 bg-[#ff9c00]/90 hover:bg-[#ff9c00] rounded-none shadow-2xl transition-all hover:scale-110 active:scale-95 border-2 border-[#ffcc99]"
               title="Close"
             >
               <svg
-                className="w-6 h-6 text-gray-700"
+                className="w-7 h-7 text-[#0a0e27]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -94,7 +98,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
+                  strokeWidth="3"
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
@@ -103,47 +107,59 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
 
           {/* Date Badge */}
           <div className="absolute bottom-6 left-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+            <div className="inline-flex items-center gap-3 px-5 py-3 bg-[#ff9c00] backdrop-blur-sm rounded-none shadow-2xl border-4 border-[#ffcc99]">
               <svg
-                className="w-5 h-5 text-indigo-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                className="w-6 h-6 text-[#0a0e27]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  fillRule="evenodd"
+                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                  clipRule="evenodd"
                 />
               </svg>
-              <span className="font-semibold text-gray-900">
+              <span className="font-black text-[#0a0e27] text-lg uppercase tracking-wider">
                 {formatDate(entry.date)}
+              </span>
+            </div>
+          </div>
+
+          {/* Status Indicator */}
+          <div className="absolute top-6 left-6">
+            <div className="flex items-center gap-2 px-4 py-2 bg-[#0a0e27]/80 backdrop-blur-sm rounded-none border-2 border-[#9999ff]">
+              <div className="w-3 h-3 bg-[#9999ff] rounded-full animate-pulse"></div>
+              <span className="text-[#9999ff] text-xs font-black uppercase tracking-widest">
+                ACTIVE LOG
               </span>
             </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-8 md:p-10">
+        <div className="p-10 md:p-12">
           {/* Title */}
-          <h2 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
-            {entry.title}
-          </h2>
+          <div className="mb-8 pb-6 border-b-4 border-[#ff9c00]/30">
+            <h2 className="text-5xl font-black text-[#ffcc99] leading-tight uppercase tracking-wide">
+              {entry.title}
+            </h2>
+          </div>
 
           {/* Content Text */}
-          <div className="prose prose-lg max-w-none">
-            <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap">
-              {entry.content}
-            </p>
+          <div className="mb-10">
+            <div className="p-6 bg-[#0a0e27]/30 border-l-8 border-[#9999ff] rounded-none backdrop-blur-sm">
+              <p className="text-[#ffcc99] text-xl leading-relaxed whitespace-pre-wrap font-medium">
+                {entry.content}
+              </p>
+            </div>
           </div>
 
           {/* Metadata */}
-          <div className="mt-8 pt-6 border-t border-gray-200 space-y-2">
+          <div className="space-y-4 p-6 bg-gradient-to-r from-[#1a1a3e]/50 to-transparent border-l-4 border-[#ff9c00] rounded-none">
             {entry.createdAt && (
-              <p className="text-sm text-gray-500 flex items-center gap-2">
+              <div className="flex items-center gap-3 text-[#9999ff]">
                 <svg
-                  className="w-4 h-4"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -155,20 +171,24 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Created:{" "}
-                {new Date(entry.createdAt).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+                <span className="font-bold uppercase tracking-wide">
+                  LOG CREATED:{" "}
+                  {new Date(entry.createdAt)
+                    .toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                    .toUpperCase()}
+                </span>
+              </div>
             )}
             {entry.updatedAt && (
-              <p className="text-sm text-gray-500 flex items-center gap-2">
+              <div className="flex items-center gap-3 text-[#9999ff]">
                 <svg
-                  className="w-4 h-4"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -180,16 +200,26 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
                 </svg>
-                Last updated:{" "}
-                {new Date(entry.updatedAt).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+                <span className="font-bold uppercase tracking-wide">
+                  LAST MODIFIED:{" "}
+                  {new Date(entry.updatedAt)
+                    .toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                    .toUpperCase()}
+                </span>
+              </div>
             )}
+            <div className="flex items-center gap-3 text-[#ff9c00]">
+              <div className="w-2 h-2 bg-[#ff9c00] rounded-full animate-pulse"></div>
+              <span className="font-black uppercase tracking-widest text-sm">
+                ENTRY ID: {entry.id}
+              </span>
+            </div>
           </div>
         </div>
       </div>

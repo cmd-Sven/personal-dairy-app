@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { updateEntry, checkEntryExists } from '../utils/localStorage';
 
 /**
- * Modal zum Bearbeiten eines bestehenden Eintrags
+ * Edit Entry Modal - Star Trek LCARS Style
+ * Log Entry Modification Interface
  */
 function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
   const [formData, setFormData] = useState({
@@ -14,7 +15,6 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
   
   const [error, setError] = useState('');
 
-  // Fülle Form mit bestehenden Daten wenn Modal geöffnet wird
   useEffect(() => {
     if (entry && isOpen) {
       setFormData({
@@ -39,19 +39,19 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
 
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError('Please enter a title');
+      setError('ERROR: Log entry title required');
       return false;
     }
     if (!formData.date) {
-      setError('Please select a date');
+      setError('ERROR: Stardate selection required');
       return false;
     }
     if (!formData.imageUrl.trim()) {
-      setError('Please enter an image URL');
+      setError('ERROR: Visual data link required');
       return false;
     }
     if (!formData.content.trim()) {
-      setError('Please enter some content');
+      setError('ERROR: Log entry content required');
       return false;
     }
     return true;
@@ -62,9 +62,8 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
     
     if (!validateForm()) return;
 
-    // Prüfe ob Datum geändert wurde und ob es bereits ein Eintrag für das neue Datum gibt
     if (formData.date !== entry.date && checkEntryExists(formData.date, entry.id)) {
-      setError('An entry already exists for this date. Please choose a different date! 📅');
+      setError('ALERT: Log entry already exists for this stardate. Database conflict detected.');
       return;
     }
 
@@ -74,7 +73,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
       onEntryUpdated(updatedEntry);
       setError('');
     } else {
-      setError('Failed to update entry. Please try again.');
+      setError('SYSTEM ERROR: Failed to update log entry. Please retry.');
     }
   };
 
@@ -84,42 +83,47 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+      <div className="bg-gradient-to-br from-[#1a1a3e] to-[#0a0e27] rounded-none shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border-4 border-[#9999ff] animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-6 rounded-t-3xl">
-          <div className="flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#9999ff] to-[#cc99cc] text-[#0a0e27] px-8 py-6 border-b-4 border-[#ccccff] relative overflow-hidden">
+          <div className="flex items-center justify-between relative z-10">
             <div>
-              <h2 className="text-3xl font-bold mb-1">✏️ Edit Entry</h2>
-              <p className="text-purple-100">Update your moment</p>
+              <h2 className="text-4xl font-black tracking-wider mb-1 uppercase">
+                MODIFY LOG ENTRY
+              </h2>
+              <p className="text-sm font-bold tracking-widest uppercase opacity-80">
+                DATABASE UPDATE • EDITING MODE ACTIVE
+              </p>
             </div>
             <button
               onClick={handleClose}
-              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
+              className="w-12 h-12 rounded-full bg-[#0a0e27]/80 hover:bg-[#0a0e27] transition-colors flex items-center justify-center border-2 border-[#ccccff] hover:scale-110"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-7 h-7 text-[#9999ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent data-stream"></div>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           {/* Error Alert */}
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg flex items-start gap-3 animate-shake">
-              <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="bg-[#cc6666]/20 border-l-8 border-[#cc6666] text-[#ffcc99] p-5 rounded-none flex items-start gap-4 animate-shake backdrop-blur-sm border-2 border-[#cc6666]/50">
+              <svg className="w-8 h-8 flex-shrink-0 mt-0.5 text-[#cc6666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span className="font-medium">{error}</span>
+              <span className="font-bold text-lg uppercase tracking-wide">{error}</span>
             </div>
           )}
 
           {/* Title Field */}
-          <div className="space-y-2">
-            <label htmlFor="edit-title" className="block text-sm font-semibold text-gray-700">
-              Title *
+          <div className="space-y-3">
+            <label htmlFor="edit-title" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
+              LOG ENTRY TITLE *
             </label>
             <input
               type="text"
@@ -127,15 +131,15 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="A wonderful day..."
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              placeholder="Enter mission log title..."
+              className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#9999ff] focus:ring-4 focus:ring-[#9999ff]/30 transition-all outline-none text-[#ffcc99] font-bold text-lg placeholder:text-[#9999ff]/40 backdrop-blur-sm"
             />
           </div>
 
           {/* Date Field */}
-          <div className="space-y-2">
-            <label htmlFor="edit-date" className="block text-sm font-semibold text-gray-700">
-              Date *
+          <div className="space-y-3">
+            <label htmlFor="edit-date" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
+              STARDATE *
             </label>
             <input
               type="date"
@@ -144,14 +148,14 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
               value={formData.date}
               onChange={handleChange}
               max={new Date().toISOString().split('T')[0]}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#9999ff] focus:ring-4 focus:ring-[#9999ff]/30 transition-all outline-none text-[#ffcc99] font-bold text-lg backdrop-blur-sm"
             />
           </div>
 
           {/* Image URL Field */}
-          <div className="space-y-2">
-            <label htmlFor="edit-imageUrl" className="block text-sm font-semibold text-gray-700">
-              Image URL *
+          <div className="space-y-3">
+            <label htmlFor="edit-imageUrl" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
+              VISUAL DATA LINK *
             </label>
             <input
               type="url"
@@ -159,51 +163,55 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
               name="imageUrl"
               value={formData.imageUrl}
               onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              placeholder="https://image-database.starfleet/visual.jpg"
+              className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#9999ff] focus:ring-4 focus:ring-[#9999ff]/30 transition-all outline-none text-[#ffcc99] font-bold text-lg placeholder:text-[#9999ff]/40 backdrop-blur-sm"
             />
             {formData.imageUrl && (
-              <div className="mt-3 rounded-xl overflow-hidden border-2 border-gray-200">
+              <div className="mt-4 rounded-none overflow-hidden border-4 border-[#9999ff]/50 relative">
                 <img 
                   src={formData.imageUrl} 
                   alt="Preview" 
-                  className="w-full h-48 object-cover"
+                  className="w-full h-56 object-cover"
                   onError={(e) => e.target.style.display = 'none'}
                 />
+                <div className="absolute top-3 left-3 px-3 py-1 bg-[#9999ff] text-[#0a0e27] text-xs font-black uppercase tracking-wider border-2 border-[#ccccff]">
+                  PREVIEW
+                </div>
               </div>
             )}
           </div>
 
           {/* Content Field */}
-          <div className="space-y-2">
-            <label htmlFor="edit-content" className="block text-sm font-semibold text-gray-700">
-              Content *
+          <div className="space-y-3">
+            <label htmlFor="edit-content" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
+              LOG ENTRY CONTENT *
             </label>
             <textarea
               id="edit-content"
               name="content"
               value={formData.content}
               onChange={handleChange}
-              placeholder="Write about your day..."
-              rows="6"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none resize-none"
+              placeholder="Captain's Log: Stardate... Begin recording..."
+              rows="7"
+              className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#9999ff] focus:ring-4 focus:ring-[#9999ff]/30 transition-all outline-none resize-none text-[#ffcc99] font-medium text-lg leading-relaxed placeholder:text-[#9999ff]/40 backdrop-blur-sm"
             />
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-4 pt-6">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+              className="flex-1 px-8 py-4 border-4 border-[#9999ff]/50 text-[#9999ff] rounded-none font-black text-lg uppercase tracking-wider hover:bg-[#9999ff]/10 transition-all hover:border-[#9999ff] hover:scale-105"
             >
-              Cancel
+              CANCEL
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+              className="flex-1 px-8 py-4 bg-gradient-to-r from-[#9999ff] to-[#cc99cc] text-[#0a0e27] rounded-none font-black text-lg uppercase tracking-wider shadow-2xl hover:shadow-[#9999ff]/80 transition-all hover:scale-105 active:scale-95 border-4 border-[#ccccff] relative overflow-hidden"
             >
-              Save Changes
+              <span className="relative z-10">UPDATE LOG</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
             </button>
           </div>
         </form>
