@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateEntry, checkEntryExists } from "../utils/localStorage";
-import MoodSelector from "./MoodSelector"; // NEU
+import MoodSelector from "./MoodSelector"; 
 
 function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
   const [formData, setFormData] = useState({
@@ -8,7 +8,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
     date: "",
     imageUrl: "",
     content: "",
-    mood: "", // NEU
+    mood: "", 
   });
 
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
     if (error) setError("");
   };
 
-  // NEU: Mood Change Handler
+  //  Mood Change Handler
   const handleMoodChange = (moodId) => {
     setFormData((prev) => ({
       ...prev,

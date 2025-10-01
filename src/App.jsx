@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { loadEntries, deleteEntry } from "./utils/localStorage";
+
 import Starfield from "./components/Starfield";
 import CalendarWeekView from "./components/CalendarWeekView";
 import AddEntryModal from "./components/AddEntryModal";
@@ -8,12 +9,13 @@ import EntryDetailModal from "./components/EntryDetailModal";
 import Toast from "./components/Toast";
 import ConfirmDialog from "./components/ConfirmDialog";
 import QuoteOfTheDay from "./components/QuoteOfTheDay";
-import ProfileCard from "./components/ProfileCard";
 
-/**
- * Captain's Log - Star Trek Themed Personal Journal
- */
+import Header from "./components/Header";
+import ProfileModal from "./components/ProfileModal";
+import EntryArchive from "./components/EntryArchive";
+
 function App() {
+  // Einträge State
   const [entries, setEntries] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -21,6 +23,8 @@ function App() {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [editingEntry, setEditingEntry] = useState(null);
   const [prefilledDate, setPrefilledDate] = useState(null);
+
+  // Feedback & Dialogs
   const [toast, setToast] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -28,7 +32,15 @@ function App() {
     entryTitle: "",
   });
 
-  // Berechne Sternenzeit (Star Trek inspiriert und etwas angepasst, wie in den Filmen auch hier das englische Format bevorzugt)
+  // Profil State
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profile, setProfile] = useState({
+    name: "Captain",
+    birthDate: "",
+    avatar: "/default-avatar.png", // Standardbild im public-Ordner
+  });
+
+  // Sternenzeit berechnen
   const calculateStardate = () => {
     const now = new Date();
     const base = new Date("2323-01-01").getTime();
@@ -39,6 +51,7 @@ function App() {
     return stardate;
   };
 
+  // Einträge laden
   useEffect(() => {
     const loadedEntries = loadEntries();
     const sortedEntries = loadedEntries.sort(
@@ -47,14 +60,11 @@ function App() {
     setEntries(sortedEntries);
   }, []);
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-  };
+  // Toast-Handler
+  const showToast = (message, type = "success") => setToast({ message, type });
+  const closeToast = () => setToast(null);
 
-  const closeToast = () => {
-    setToast(null);
-  };
-
+  // Entry Handler
   const handleAddEntry = (date = null) => {
     setPrefilledDate(date);
     setShowAddModal(true);
@@ -66,7 +76,7 @@ function App() {
     );
     setShowAddModal(false);
     setPrefilledDate(null);
-    showToast("Log-Eintrag aufgezeichnet! 🚀", "Erledigt");
+    showToast("Log-Eintrag aufgezeichnet! 🚀");
   };
 
   const handleEditClick = (entry, e) => {
@@ -84,7 +94,7 @@ function App() {
     );
     setShowEditModal(false);
     setEditingEntry(null);
-    showToast("Log-Eintrag aktualisiert! ✨", "Erledigt");
+    showToast("Log-Eintrag aktualisiert! ✨");
   };
 
   const handleDeleteClick = (entry, e) => {
@@ -98,23 +108,20 @@ function App() {
 
   const confirmDelete = () => {
     const success = deleteEntry(confirmDialog.entryId);
-
     if (success) {
       setEntries((prev) =>
         prev.filter((entry) => entry.id !== confirmDialog.entryId)
       );
-      showToast("Log-Eintrag wurde gelöscht! 🗑️", "Erledigt");
+      showToast("Log-Eintrag gelöscht! 🗑️");
       setShowDetailModal(false);
     } else {
-      showToast("Error: Eintrag kann nicht gelöscht werden", "Fehler");
+      showToast("Error: Eintrag kann nicht gelöscht werden", "error");
     }
-
     setConfirmDialog({ isOpen: false, entryId: null, entryTitle: "" });
   };
 
-  const cancelDelete = () => {
+  const cancelDelete = () =>
     setConfirmDialog({ isOpen: false, entryId: null, entryTitle: "" });
-  };
 
   const handleCardClick = (entry) => {
     setSelectedEntry(entry);
@@ -123,204 +130,42 @@ function App() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Starfield Background Komponente */}
       <Starfield />
 
-      {/* Star Trek Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-gradient-to-r from-[#0a0e27]/95 via-[#1a1a3e]/95 to-[#0a0e27]/95 border-b-4 border-[#ff9c00] shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo & Title */}
-            <div className="flex items-center gap-4">
-              <div className="relative w-16 h-16 bg-gradient-to-br from-[#ff9c00] to-[#cc6666] rounded-full flex items-center justify-center shadow-lg border-4 border-[#ffcc99] animate-pulse-slow">
-                <span className="text-3xl">🖖</span>
-                <div className="absolute inset-0 rounded-full border-2 border-[#9999ff] animate-ping opacity-20"></div>
-              </div>
-              <div>
-                <h1 className="text-2xl font-black tracking-wider bg-gradient-to-r from-[#ff9c00] via-[#ffcc99] to-[#ff9c00] bg-clip-text text-transparent drop-shadow-lg">
-                  CAPTAIN'S LOG
-                </h1>
-                <p className="text-xs text-[#9999ff] font-medium tracking-widest uppercase">
-                  Sternenzeit {calculateStardate()} • Persöhnliches Logbuch
-                </p>
-              </div>
-            </div>
+      {/* Header */}
+      <Header
+        calculateStardate={calculateStardate}
+        profile={profile}
+        onProfileClick={() => setShowProfileModal(true)}
+        onAddEntry={() => handleAddEntry()}
+      />
 
-            {/* Add Entry Button */}
-            <button
-              onClick={() => handleAddEntry()}
-              className="group relative px-8 py-3 bg-gradient-to-r from-[#ff9c00] to-[#cc6666] text-[#0a0e27] rounded-none font-bold text-lg tracking-wider shadow-2xl hover:shadow-[#ff9c00]/50 transition-all duration-200 hover:scale-105 active:scale-95 border-2 border-[#ffcc99] lcars-corner overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                NEUER LOG EINTRAG
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Profil Modal */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        profile={profile}
+        setProfile={setProfile}
+      />
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="max-w-[1400px] mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Zitat des Tages ala Star Trek + Profilbild Avatar*/}
-        <div className="flex flex-col md:flex-row items-start mt-6 mb">
-          <ProfileCard />
+        <div className="flex flex-col md:flex-row items-start gap-6 mt-6 mb-12">
           <QuoteOfTheDay />
         </div>
-        {/* Week View */}
+
         <CalendarWeekView
           entries={entries}
           onAddEntry={handleAddEntry}
           onCardClick={handleCardClick}
         />
 
-        {/* All Entries */}
-        {entries.length > 0 && (
-          <div className="mt-16">
-            <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl">
-              <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase">
-                Logbuch Archiv
-              </h2>
-              <p className="text-[#9999ff] mt-2 font-medium">
-                {entries.length} {entries.length === 1 ? "ENTRY" : "ENTRIES"}{" "}
-                AUFGENOMMEN • DATEN AKTIV
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {entries.map((entry) => (
-                <article
-                  key={entry.id}
-                  className="group bg-gradient-to-br from-[#1a1a3e]/90 to-[#0a0e27]/90 backdrop-blur-sm rounded-none shadow-2xl hover:shadow-[#9999ff]/30 transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-2 border-2 border-[#9999ff]/30 hover:border-[#ff9c00] lcars-corner"
-                >
-                  {/* Preview Image */}
-                  <div
-                    className="relative h-56 overflow-hidden bg-gradient-to-br from-[#2a5caa] to-[#1a1a3e]"
-                    onClick={() => handleCardClick(entry)}
-                  >
-                    <img
-                      src={entry.imageUrl}
-                      alt={entry.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e27] via-transparent to-transparent opacity-60" />
-
-                    {/* Action Buttons */}
-                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button
-                        onClick={(e) => handleEditClick(entry, e)}
-                        className="p-2 bg-[#9999ff]/90 hover:bg-[#9999ff] rounded-none shadow-lg transition-all hover:scale-110 border border-[#ffcc99]"
-                        title="Edit entry"
-                      >
-                        <svg
-                          className="w-5 h-5 text-[#0a0e27]"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={(e) => handleDeleteClick(entry, e)}
-                        className="p-2 bg-[#cc6666]/90 hover:bg-[#cc6666] rounded-none shadow-lg transition-all hover:scale-110 border border-[#ffcc99]"
-                        title="Delete entry"
-                      >
-                        <svg
-                          className="w-5 h-5 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {/* Hologram Effect */}
-                    <div className="absolute inset-0 pointer-events-none hologram opacity-10 bg-gradient-to-b from-[#9999ff] to-transparent mix-blend-overlay"></div>
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="p-6" onClick={() => handleCardClick(entry)}>
-                    {/* Date Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#ff9c00] text-[#0a0e27] rounded-none text-sm font-bold mb-4 shadow-lg border-2 border-[#ffcc99]">
-                      <svg
-                        className="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {new Date(entry.date)
-                        .toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })
-                        .toUpperCase()}
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-xl font-bold text-[#ffcc99] mb-3 line-clamp-2 group-hover:text-[#ff9c00] transition-colors uppercase tracking-wide">
-                      {entry.title}
-                    </h3>
-
-                    {/* Content Preview */}
-                    <p className="text-[#9999ff] text-sm line-clamp-3 mb-4 font-medium">
-                      {entry.content}
-                    </p>
-
-                    {/* Read More */}
-                    <div className="flex items-center text-[#ff9c00] font-bold text-sm group-hover:gap-2 transition-all uppercase tracking-wider">
-                      <span>ACCESS LOG</span>
-                      <svg
-                        className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="3"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        )}
+        <EntryArchive
+          entries={entries}
+          onCardClick={handleCardClick}
+          onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
+        />
       </main>
 
       {/* Modals */}
