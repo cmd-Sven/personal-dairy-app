@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { addEntry, checkEntryExists } from '../utils/localStorage';
+import { useState, useEffect } from "react";
+import { addEntry, checkEntryExists } from "../utils/localStorage";
 
 /**
  * Add Entry Modal - Star Trek LCARS Style
@@ -7,19 +7,19 @@ import { addEntry, checkEntryExists } from '../utils/localStorage';
  */
 function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
   const [formData, setFormData] = useState({
-    title: '',
-    date: '',
-    imageUrl: '',
-    content: ''
+    title: "",
+    date: "",
+    imageUrl: "",
+    content: "",
   });
-  
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isOpen && prefilledDate) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        date: prefilledDate
+        date: prefilledDate,
       }));
     }
   }, [isOpen, prefilledDate]);
@@ -28,28 +28,28 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    if (error) setError('');
+    if (error) setError("");
   };
 
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError('ERROR: Log entry title required');
+      setError("ERROR: Log Eintrag: Titel wird benötigt!");
       return false;
     }
     if (!formData.date) {
-      setError('ERROR: Stardate selection required');
+      setError("ERROR: Sternenzeit ist nicht gesetzt!");
       return false;
     }
     if (!formData.imageUrl.trim()) {
-      setError('ERROR: Visual data link required');
+      setError("ERROR: Viuelles Datenelement fehlt");
       return false;
     }
     if (!formData.content.trim()) {
-      setError('ERROR: Log entry content required');
+      setError("ERROR: Log Beschreibung fehlt!");
       return false;
     }
     return true;
@@ -57,24 +57,24 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     if (checkEntryExists(formData.date)) {
-      setError('ALERT: Log entry already exists for this stardate. Database conflict detected.');
+      setError("ALERT: Log Eintrag existiert bereits!");
       return;
     }
 
     const newEntry = addEntry(formData);
     onEntryAdded(newEntry);
-    
-    setFormData({ title: '', date: '', imageUrl: '', content: '' });
-    setError('');
+
+    setFormData({ title: "", date: "", imageUrl: "", content: "" });
+    setError("");
   };
 
   const handleClose = () => {
-    setFormData({ title: '', date: '', imageUrl: '', content: '' });
-    setError('');
+    setFormData({ title: "", date: "", imageUrl: "", content: "" });
+    setError("");
     onClose();
   };
 
@@ -86,18 +86,28 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
           <div className="flex items-center justify-between relative z-10">
             <div>
               <h2 className="text-4xl font-black tracking-wider mb-1 uppercase">
-                NEW LOG ENTRY
+                NEUER LOG EINTRAG
               </h2>
               <p className="text-sm font-bold tracking-widest uppercase opacity-80">
-                CAPTAIN'S PERSONAL LOG • RECORDING ACTIVE
+                CAPTAIN'S LOG TAGEBUCH •
               </p>
             </div>
             <button
               onClick={handleClose}
               className="w-12 h-12 rounded-full bg-[#0a0e27]/80 hover:bg-[#0a0e27] transition-colors flex items-center justify-center border-2 border-[#ffcc99] hover:scale-110"
             >
-              <svg className="w-7 h-7 text-[#ff9c00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-7 h-7 text-[#ff9c00]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="3"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -109,17 +119,32 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
           {/* Error Alert */}
           {error && (
             <div className="bg-[#cc6666]/20 border-l-8 border-[#cc6666] text-[#ffcc99] p-5 rounded-none flex items-start gap-4 animate-shake backdrop-blur-sm border-2 border-[#cc6666]/50">
-              <svg className="w-8 h-8 flex-shrink-0 mt-0.5 text-[#cc6666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg
+                className="w-8 h-8 flex-shrink-0 mt-0.5 text-[#cc6666]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
-              <span className="font-bold text-lg uppercase tracking-wide">{error}</span>
+              <span className="font-bold text-lg uppercase tracking-wide">
+                {error}
+              </span>
             </div>
           )}
 
           {/* Title Field */}
           <div className="space-y-3">
-            <label htmlFor="title" className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest">
-              LOG ENTRY TITLE *
+            <label
+              htmlFor="title"
+              className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
+            >
+              LOG EINTRAG TITEL *
             </label>
             <input
               type="text"
@@ -134,8 +159,11 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
 
           {/* Date Field */}
           <div className="space-y-3">
-            <label htmlFor="date" className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest">
-              STARDATE *
+            <label
+              htmlFor="date"
+              className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
+            >
+              STERNENZEIT *
             </label>
             <input
               type="date"
@@ -143,15 +171,18 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              max={new Date().toISOString().split('T')[0]}
+              max={new Date().toISOString().split("T")[0]}
               className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#ff9c00] focus:ring-4 focus:ring-[#ff9c00]/30 transition-all outline-none text-[#ffcc99] font-bold text-lg backdrop-blur-sm"
             />
           </div>
 
           {/* Image URL Field */}
           <div className="space-y-3">
-            <label htmlFor="imageUrl" className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest">
-              VISUAL DATA LINK *
+            <label
+              htmlFor="imageUrl"
+              className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
+            >
+              VISUELLER DATEN LINK *
             </label>
             <input
               type="url"
@@ -164,14 +195,14 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
             />
             {formData.imageUrl && (
               <div className="mt-4 rounded-none overflow-hidden border-4 border-[#9999ff]/50 relative">
-                <img 
-                  src={formData.imageUrl} 
-                  alt="Preview" 
+                <img
+                  src={formData.imageUrl}
+                  alt="Preview"
                   className="w-full h-56 object-cover"
-                  onError={(e) => e.target.style.display = 'none'}
+                  onError={(e) => (e.target.style.display = "none")}
                 />
                 <div className="absolute top-3 left-3 px-3 py-1 bg-[#ff9c00] text-[#0a0e27] text-xs font-black uppercase tracking-wider border-2 border-[#ffcc99]">
-                  PREVIEW
+                  VORSCHAU
                 </div>
               </div>
             )}
@@ -179,8 +210,11 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
 
           {/* Content Field */}
           <div className="space-y-3">
-            <label htmlFor="content" className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest">
-              LOG ENTRY CONTENT *
+            <label
+              htmlFor="content"
+              className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
+            >
+              LOG EINTRAG INHALT *
             </label>
             <textarea
               id="content"
@@ -200,13 +234,13 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               onClick={handleClose}
               className="flex-1 px-8 py-4 border-4 border-[#9999ff]/50 text-[#9999ff] rounded-none font-black text-lg uppercase tracking-wider hover:bg-[#9999ff]/10 transition-all hover:border-[#9999ff] hover:scale-105"
             >
-              ABORT
+              ABBRUCH
             </button>
             <button
               type="submit"
               className="flex-1 px-8 py-4 bg-gradient-to-r from-[#ff9c00] to-[#cc6666] text-[#0a0e27] rounded-none font-black text-lg uppercase tracking-wider shadow-2xl hover:shadow-[#ff9c00]/80 transition-all hover:scale-105 active:scale-95 border-4 border-[#ffcc99] relative overflow-hidden"
             >
-              <span className="relative z-10">RECORD LOG</span>
+              <span className="relative z-10">LOG AUFZEICHNEN</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
             </button>
           </div>

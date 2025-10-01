@@ -50,11 +50,11 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
       {/* Week Header */}
       <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl lcars-corner">
         <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase mb-2">
-          Weekly Mission Schedule
+          Wöchentlicher Missions Kalendar
         </h2>
         <p className="text-[#9999ff] font-medium tracking-wide">
           {weekDays[0]?.monthName} {weekDays[0]?.dayNumber} -{" "}
-          {weekDays[6]?.monthName} {weekDays[6]?.dayNumber} • CURRENT WEEK LOG
+          {weekDays[6]?.monthName} {weekDays[6]?.dayNumber} • LOG AKTUELLE WOCHE
           STATUS
         </p>
       </div>
@@ -160,7 +160,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                       </svg>
                     </div>
                     <p className="text-xs font-bold text-[#9999ff]/60 uppercase tracking-wider">
-                      NO LOG ENTRY
+                      KEIN LOG VORHANDEN
                     </p>
                   </div>
                 )}
@@ -214,7 +214,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                         clipRule="evenodd"
                       />
                     </svg>
-                    CURRENT
+                    AKTIVER TAG
                   </span>
                 </div>
               )}

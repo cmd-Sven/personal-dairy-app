@@ -90,10 +90,10 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
           <div className="flex items-center justify-between relative z-10">
             <div>
               <h2 className="text-4xl font-black tracking-wider mb-1 uppercase">
-                MODIFY LOG ENTRY
+                LOG EINTRAG ÄNDERN
               </h2>
               <p className="text-sm font-bold tracking-widest uppercase opacity-80">
-                DATABASE UPDATE • EDITING MODE ACTIVE
+                DATEN UPDATE • BEARBEITUNGSMODUS AKTIV
               </p>
             </div>
             <button
@@ -123,7 +123,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
           {/* Title Field */}
           <div className="space-y-3">
             <label htmlFor="edit-title" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
-              LOG ENTRY TITLE *
+              LOG EINTRAG TITEL *
             </label>
             <input
               type="text"
@@ -139,7 +139,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
           {/* Date Field */}
           <div className="space-y-3">
             <label htmlFor="edit-date" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
-              STARDATE *
+              STERNENZEIT *
             </label>
             <input
               type="date"
@@ -155,7 +155,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
           {/* Image URL Field */}
           <div className="space-y-3">
             <label htmlFor="edit-imageUrl" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
-              VISUAL DATA LINK *
+              VISUELLER DATEN LINK *
             </label>
             <input
               type="url"
@@ -175,7 +175,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
                   onError={(e) => e.target.style.display = 'none'}
                 />
                 <div className="absolute top-3 left-3 px-3 py-1 bg-[#9999ff] text-[#0a0e27] text-xs font-black uppercase tracking-wider border-2 border-[#ccccff]">
-                  PREVIEW
+                  VORSCHAU
                 </div>
               </div>
             )}
@@ -184,7 +184,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
           {/* Content Field */}
           <div className="space-y-3">
             <label htmlFor="edit-content" className="block text-sm font-black text-[#9999ff] uppercase tracking-widest">
-              LOG ENTRY CONTENT *
+              LOG EINTRAG INHALT *
             </label>
             <textarea
               id="edit-content"
@@ -204,7 +204,7 @@ function EditEntryModal({ entry, isOpen, onClose, onEntryUpdated }) {
               onClick={handleClose}
               className="flex-1 px-8 py-4 border-4 border-[#9999ff]/50 text-[#9999ff] rounded-none font-black text-lg uppercase tracking-wider hover:bg-[#9999ff]/10 transition-all hover:border-[#9999ff] hover:scale-105"
             >
-              CANCEL
+              ABBRUCH
             </button>
             <button
               type="submit"

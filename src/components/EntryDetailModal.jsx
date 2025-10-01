@@ -130,7 +130,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             <div className="flex items-center gap-2 px-4 py-2 bg-[#0a0e27]/80 backdrop-blur-sm rounded-none border-2 border-[#9999ff]">
               <div className="w-3 h-3 bg-[#9999ff] rounded-full animate-pulse"></div>
               <span className="text-[#9999ff] text-xs font-black uppercase tracking-widest">
-                ACTIVE LOG
+                AKTIVER LOG
               </span>
             </div>
           </div>

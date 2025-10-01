@@ -139,7 +139,7 @@ function App() {
                   CAPTAIN'S LOG
                 </h1>
                 <p className="text-xs text-[#9999ff] font-medium tracking-widest uppercase">
-                  Stardate {calculateStardate()} • Personal Journal System
+                  Sternenzeit {calculateStardate()} • Persöhnliches Logbuch
                 </p>
               </div>
             </div>
@@ -163,7 +163,7 @@ function App() {
                     d="M12 4v16m8-8H4"
                   />
                 </svg>
-                NEW LOG ENTRY
+                NEUER LOG EINTRAG
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
             </button>
@@ -185,11 +185,11 @@ function App() {
           <div className="mt-16">
             <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl">
               <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase">
-                Mission Log Archives
+                Missions Archiv
               </h2>
               <p className="text-[#9999ff] mt-2 font-medium">
                 {entries.length} {entries.length === 1 ? "ENTRY" : "ENTRIES"}{" "}
-                RECORDED • DATABASE ACTIVE
+                AUFGENOMMEN • DATEN AKTIV
               </p>
             </div>
 
