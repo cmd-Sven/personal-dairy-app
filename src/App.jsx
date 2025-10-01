@@ -8,6 +8,7 @@ import EntryDetailModal from "./components/EntryDetailModal";
 import Toast from "./components/Toast";
 import ConfirmDialog from "./components/ConfirmDialog";
 import QuoteOfTheDay from "./components/QuoteOfTheDay";
+import ProfileCard from "./components/ProfileCard";
 
 /**
  * Captain's Log - Star Trek Themed Personal Journal
@@ -171,11 +172,14 @@ function App() {
           </div>
         </div>
       </header>
-      {/* Zitat des Tages ala Star Trek */}
-      <QuoteOfTheDay />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <main className="max-w-[1400px] mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        {/* Zitat des Tages ala Star Trek + Profilbild Avatar*/}
+        <div className="flex flex-col md:flex-row items-start mt-6 mb">
+          <ProfileCard />
+          <QuoteOfTheDay />
+        </div>
         {/* Week View */}
         <CalendarWeekView
           entries={entries}
