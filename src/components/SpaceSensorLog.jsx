@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+const NASA_API_KEY = "50rAjQLzw4ECgc8F6Ol3IrW8nTbUO9FQxtegr1bJ";
+
 export default function SpaceSensorLog() {
   const [imageData, setImageData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ export default function SpaceSensorLog() {
 
     // Lade NASA Bild nach 3 Sekunden
     const timer = setTimeout(() => {
-      fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")
+      fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`)
         .then((res) => {
           if (!res.ok) throw new Error("Sensordaten nicht verfügbar");
           return res.json();
@@ -64,7 +66,7 @@ export default function SpaceSensorLog() {
                 {progress}%
               </span>
             </div>
-            
+
             {/* Ladebalken */}
             <div className="w-full h-6 bg-[#0a0e27]/80 border-2 border-[#9999ff]/50 rounded-none overflow-hidden">
               <div
@@ -78,8 +80,14 @@ export default function SpaceSensorLog() {
             {/* Scan-Indikatoren */}
             <div className="flex gap-2 mt-4 justify-center">
               <div className="w-2 h-2 bg-[#9999ff] rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-[#9999ff] rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-              <div className="w-2 h-2 bg-[#9999ff] rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+              <div
+                className="w-2 h-2 bg-[#9999ff] rounded-full animate-pulse"
+                style={{ animationDelay: "0.2s" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-[#9999ff] rounded-full animate-pulse"
+                style={{ animationDelay: "0.4s" }}
+              ></div>
             </div>
           </div>
 
@@ -106,12 +114,20 @@ export default function SpaceSensorLog() {
         // Bild anzeigen
         <>
           <div className="relative mb-4 rounded-md overflow-hidden border-2 border-[#ff9c00]/50">
-            <img
-              src={imageData.url}
-              alt={imageData.title}
-              className="w-full h-64 object-cover"
-            />
-            
+            {imageData.media_type === "image" ? (
+              <img
+                src={imageData.url}
+                alt={imageData.title}
+                className="w-full h-64 object-cover"
+              />
+            ) : (
+              <div className="w-full h-64 bg-[#0a0e27] flex items-center justify-center">
+                <p className="text-[#9999ff]">
+                  Video-Inhalte werden nicht unterstützt
+                </p>
+              </div>
+            )}
+
             {/* Scanner-Overlay */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute w-full h-px bg-gradient-to-r from-transparent via-[#ff9c00]/50 to-transparent animate-scan"></div>
