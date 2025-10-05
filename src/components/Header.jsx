@@ -14,7 +14,11 @@ function Header({
           {/* Logo & Title */}
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 bg-gradient-to-br from-[#ff9c00] to-[#cc6666] rounded-full flex items-center justify-center shadow-lg border-4 border-[#ffcc99] animate-pulse-slow">
-              <span className="text-3xl">🖖</span>
+              <img
+                className="w-[50px]"
+                src="https://www.freepnglogos.com/uploads/star-trek-png-logo/star-trek-into-darkness-starfleet-png-logo-10.png"
+              ></img>
+
               <div className="absolute inset-0 rounded-full border-2 border-[#9999ff] animate-ping opacity-20"></div>
             </div>
             <div>
@@ -78,7 +82,7 @@ function Header({
             {/* Selbstzerstörung Button */}
             <button
               onClick={onSelfDestruct}
-              className="px-6 py-2 bg-gradient-to-r from-[#cc6666] to-[#ff6666] text-white rounded-none font-bold text-sm tracking-wider shadow-2xl hover:shadow-[#cc6666]/50 transition-all duration-200 hover:scale-105 active:scale-95 border-2 border-[#ff9999] uppercase"
+              className="group relative px-6 py-2 bg-gradient-to-r from-[#ff9c00] to-[#cc6666] text-[#0a0e27] rounded-none font-bold text-lg tracking-wider shadow-2xl hover:shadow-[#ff9c00]/50 transition-all duration-200 hover:scale-105 active:scale-95 border-2 border-[#ffcc99] lcars-corner overflow-hidden"
               title="Alle Daten löschen"
             >
               ⚠ SELBSTZERSTÖRUNG

@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
 import { getMoodById } from "../utils/moodHelper";
+import { loadProfile } from "../utils/localStorage";
 
 /**
- * Wochenkalender-Ansicht - Star Trek LCARS Style
- * Mission Log Schedule Display mit Mood Indicators
+ * Wochenkalender-Ansicht - Star Trek  Style
+ * Missions Log Anzeige mit Mood +  gespeicherte Sachen aus dem localStorage holen
  */
 function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
   const [weekDays, setWeekDays] = useState([]);
+  const [captain, setCaptain] = useState(null);
 
   useEffect(() => {
     generateWeekDays();
   }, [entries]);
+
+  useEffect(() => {
+    const profile = loadProfile(); // Profil aus localStorage holen
+    setCaptain(profile);
+  }, []);
 
   const generateWeekDays = () => {
     const today = new Date();
@@ -57,14 +64,28 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
   return (
     <div className="mb-16">
       {/* Week Header */}
-      <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl lcars-corner">
-        <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase mb-2">
-          Wöchentlicher Missionsplan
-        </h2>
-        <p className="text-[#9999ff] font-medium tracking-wide">
-          {weekDays[0]?.dayNumber}. {weekDays[0]?.monthName} -{" "}
-          {weekDays[6]?.dayNumber}. {weekDays[6]?.monthName} • AKTUELLE WOCHE
-        </p>
+      <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl lcars-corner flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase mb-2 flex items-center gap-3">
+            Wöchentlicher Missionsbericht – Log von{" "}
+            {captain?.name ? (
+              <span className="text-[#ff9c00]">{captain.name}</span>
+            ) : (
+              <span className="text-[#666] italic">[Unbekannter Captain]</span>
+            )}
+            {captain?.avatar && (
+              <img
+                src={captain.avatar}
+                alt={captain.name}
+                className="w-10 h-10 rounded-full border-2 border-[#ff9c00] shadow-lg object-cover"
+              />
+            )}
+          </h2>
+          <p className="text-[#9999ff] font-medium tracking-wide">
+            {weekDays[0]?.dayNumber}. {weekDays[0]?.monthName} –{" "}
+            {weekDays[6]?.dayNumber}. {weekDays[6]?.monthName} • AKTUELLE WOCHE
+          </p>
+        </div>
       </div>
 
       {/* Week Grid */}
@@ -167,7 +188,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                       </div>
                     </>
                   ) : (
-                    // No entry - show empty state
+                    // Wenn keine einträge vorhanden sind - hier die leeren
                     <div className="flex-1 flex flex-col items-center justify-center">
                       <div className="w-16 h-16 mb-3 bg-[#9999ff]/10 rounded-full flex items-center justify-center border-2 border-[#9999ff]/30">
                         <svg
@@ -190,7 +211,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                     </div>
                   )}
 
-                  {/* Hologram scan line */}
+                  {/* Schwebenden Hologram Linien, Schnelligkeit angepasst */}
                   {day.entry && (
                     <div className="absolute inset-0 pointer-events-none">
                       <div className="w-full h-px bg-gradient-to-r from-transparent via-[#9999ff]/30 to-transparent animate-pulse"></div>
@@ -252,7 +273,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                   </div>
                 )}
 
-                {/* LCARS Corner indicator */}
+                {/* LCARS Theme speziell die Ecken */}
                 <div className="absolute bottom-2 left-2 w-3 h-3 bg-[#9999ff] rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute top-2 right-2 w-3 h-3 bg-[#ff9c00] rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
               </div>
