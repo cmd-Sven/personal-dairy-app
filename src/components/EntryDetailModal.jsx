@@ -1,3 +1,5 @@
+import { getMoodById } from "../utils/moodHelper";
+
 /**
  * Entry Detail Modal - Star Trek LCARS Style
  * Log Entry Full Display Interface
@@ -8,7 +10,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date
-      .toLocaleDateString("en-US", {
+      .toLocaleDateString("de-DE", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -21,6 +23,8 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
       onClose();
     }
   };
+
+  const mood = entry.mood ? getMoodById(entry.mood) : null;
 
   return (
     <div
@@ -36,7 +40,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             className="w-full h-full object-cover opacity-70"
             onError={(e) => {
               e.target.src =
-                "https://via.placeholder.com/800x600/2a5caa/ffcc99?text=VISUAL+DATA+UNAVAILABLE";
+                "https://via.placeholder.com/800x600/2a5caa/ffcc99?text=VISUELLE+DATEN+NICHT+VERFÜGBAR";
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e27] via-[#0a0e27]/50 to-transparent" />
@@ -49,7 +53,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             <button
               onClick={(e) => onEdit(entry, e)}
               className="p-4 bg-[#9999ff]/90 hover:bg-[#9999ff] rounded-none shadow-2xl transition-all hover:scale-110 active:scale-95 border-2 border-[#ccccff]"
-              title="Modify log entry"
+              title="Log-Eintrag bearbeiten"
             >
               <svg
                 className="w-7 h-7 text-[#0a0e27]"
@@ -68,7 +72,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             <button
               onClick={(e) => onDelete(entry, e)}
               className="p-4 bg-[#cc6666]/90 hover:bg-[#cc6666] rounded-none shadow-2xl transition-all hover:scale-110 active:scale-95 border-2 border-[#ffcccc]"
-              title="Delete log entry"
+              title="Log-Eintrag löschen"
             >
               <svg
                 className="w-7 h-7 text-white"
@@ -87,7 +91,7 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
             <button
               onClick={onClose}
               className="p-4 bg-[#ff9c00]/90 hover:bg-[#ff9c00] rounded-none shadow-2xl transition-all hover:scale-110 active:scale-95 border-2 border-[#ffcc99]"
-              title="Close"
+              title="Schließen"
             >
               <svg
                 className="w-7 h-7 text-[#0a0e27]"
@@ -138,11 +142,29 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
 
         {/* Content */}
         <div className="p-10 md:p-12">
-          {/* Title */}
+          {/* Title & Mood */}
           <div className="mb-8 pb-6 border-b-4 border-[#ff9c00]/30">
-            <h2 className="text-5xl font-black text-[#ffcc99] leading-tight uppercase tracking-wide">
+            <h2 className="text-5xl font-black text-[#ffcc99] leading-tight uppercase tracking-wide mb-4">
               {entry.title}
             </h2>
+            
+            {/* Mood Badge */}
+            {mood && (
+              <div 
+                className={`inline-flex items-center gap-3 px-5 py-3 bg-gradient-to-r ${mood.color} rounded-none border-2 ${mood.borderColor} shadow-lg`}
+                title={mood.tooltip}
+              >
+                <span className="text-2xl">{mood.icon}</span>
+                <div>
+                  <p className="text-[#0a0e27] font-black text-sm uppercase tracking-wider">
+                    {mood.label}
+                  </p>
+                  <p className="text-[#0a0e27] text-xs font-bold opacity-80">
+                    {mood.description}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Content Text */}
@@ -172,9 +194,9 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
                   />
                 </svg>
                 <span className="font-bold uppercase tracking-wide">
-                  LOG CREATED:{" "}
+                  LOG ERSTELLT:{" "}
                   {new Date(entry.createdAt)
-                    .toLocaleString("en-US", {
+                    .toLocaleString("de-DE", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -201,9 +223,9 @@ function EntryDetailModal({ entry, isOpen, onClose, onEdit, onDelete }) {
                   />
                 </svg>
                 <span className="font-bold uppercase tracking-wide">
-                  LAST MODIFIED:{" "}
+                  ZULETZT GEÄNDERT:{" "}
                   {new Date(entry.updatedAt)
-                    .toLocaleString("en-US", {
+                    .toLocaleString("de-DE", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",

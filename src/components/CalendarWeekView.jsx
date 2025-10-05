@@ -32,11 +32,11 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
       days.push({
         date: dateString,
         dayName: date
-          .toLocaleDateString("en-US", { weekday: "short" })
+          .toLocaleDateString("de-DE", { weekday: "short" })
           .toUpperCase(),
         dayNumber: date.getDate(),
         monthName: date
-          .toLocaleDateString("en-US", { month: "short" })
+          .toLocaleDateString("de-DE", { month: "short" })
           .toUpperCase(),
         isToday,
         entry,
@@ -46,17 +46,24 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
     setWeekDays(days);
   };
 
+  const isFutureDay = (dateString) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkDate = new Date(dateString);
+    checkDate.setHours(0, 0, 0, 0);
+    return checkDate > today;
+  };
+
   return (
     <div className="mb-16">
       {/* Week Header */}
       <div className="mb-8 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md rounded-none border-l-8 border-[#ff9c00] shadow-2xl lcars-corner">
         <h2 className="text-3xl font-black text-[#ffcc99] tracking-wider uppercase mb-2">
-          Weekly Mission Schedule
+          Wöchentlicher Missionsplan
         </h2>
         <p className="text-[#9999ff] font-medium tracking-wide">
-          {weekDays[0]?.monthName} {weekDays[0]?.dayNumber} -{" "}
-          {weekDays[6]?.monthName} {weekDays[6]?.dayNumber} • CURRENT WEEK LOG
-          STATUS
+          {weekDays[0]?.dayNumber}. {weekDays[0]?.monthName} -{" "}
+          {weekDays[6]?.dayNumber}. {weekDays[6]?.monthName} • AKTUELLE WOCHE
         </p>
       </div>
 
@@ -78,7 +85,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
               <div
                 onClick={() => day.entry && onCardClick(day.entry)}
                 className={`
-                  relative h-56 cursor-pointer transition-all duration-300 border-2
+                  relative h-64 cursor-pointer transition-all duration-300 border-2
                   ${
                     day.entry
                       ? "bg-gradient-to-br from-[#1a1a3e]/90 to-[#0a0e27]/90 border-[#9999ff]/50"
@@ -86,6 +93,11 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                   }
                   ${
                     day.isToday && !day.entry ? "border-[#ff9c00] border-4" : ""
+                  }
+                  ${
+                    !day.entry && !isFutureDay(day.date) && !day.isToday
+                      ? "border-[#cc6666]/40 hover:border-[#cc6666]"
+                      : ""
                   }
                   ${day.entry ? "hover:scale-105 hover:border-[#ff9c00]" : ""}
                 `}
@@ -113,7 +125,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                 </div>
 
                 {/* Card Content */}
-                <div className="p-4 h-[calc(100%-96px)] flex flex-col relative">
+                <div className="p-4 h-[calc(100%-112px)] flex flex-col relative">
                   {day.entry ? (
                     // Entry exists
                     <>
@@ -133,12 +145,12 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                             </div>
                           )}
                         </div>
-                        <h3 className="text-sm font-bold text-[#ffcc99] line-clamp-2 uppercase tracking-wide">
+                        <h3 className="text-sm font-bold text-[#ffcc99] line-clamp-2 uppercase tracking-wide leading-tight">
                           {day.entry.title}
                         </h3>
                       </div>
-                      <div className="flex items-center text-[#ff9c00] text-xs font-black uppercase tracking-wider">
-                        <span>ACCESS</span>
+                      <div className="flex items-center text-[#ff9c00] text-xs font-black uppercase tracking-wider mt-auto">
+                        <span>ZUGRIFF</span>
                         <svg
                           className="w-3 h-3 ml-1"
                           fill="none"
@@ -173,7 +185,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                         </svg>
                       </div>
                       <p className="text-xs font-bold text-[#9999ff]/60 uppercase tracking-wider">
-                        NO LOG ENTRY
+                        KEIN EINTRAG
                       </p>
                     </div>
                   )}
@@ -186,15 +198,23 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                   )}
                 </div>
 
-                {/* Add Entry Button - nur für heutigen Tag ohne Eintrag */}
-                {day.isToday && !day.entry && (
+                {/* Add Entry Button - für alle Tage ohne Eintrag (außer Zukunft) */}
+                {!day.entry && !isFutureDay(day.date) && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onAddEntry(day.date);
                     }}
-                    className="absolute bottom-4 right-4 w-12 h-12 bg-gradient-to-r from-[#ff9c00] to-[#cc6666] text-[#0a0e27] rounded-full shadow-2xl hover:shadow-[#ff9c00]/80 transition-all duration-200 hover:scale-125 active:scale-95 flex items-center justify-center group-hover:ring-4 group-hover:ring-[#ff9c00]/50 border-2 border-[#ffcc99] animate-pulse-slow"
-                    title="Record today's log"
+                    className={`absolute bottom-4 right-4 w-12 h-12 bg-gradient-to-r ${
+                      day.isToday
+                        ? "from-[#ff9c00] to-[#cc6666] animate-pulse-slow"
+                        : "from-[#cc6666] to-[#9999ff]"
+                    } text-[#0a0e27] rounded-full shadow-2xl hover:shadow-[#ff9c00]/80 transition-all duration-200 hover:scale-125 active:scale-95 flex items-center justify-center group-hover:ring-4 group-hover:ring-[#ff9c00]/50 border-2 border-[#ffcc99]`}
+                    title={
+                      day.isToday
+                        ? "Heutigen Log aufzeichnen"
+                        : "Fehlenden Log-Eintrag hinzufügen"
+                    }
                   >
                     <svg
                       className="w-7 h-7"
@@ -227,7 +247,7 @@ function CalendarWeekView({ entries, onAddEntry, onCardClick }) {
                           clipRule="evenodd"
                         />
                       </svg>
-                      CURRENT
+                      HEUTE
                     </span>
                   </div>
                 )}

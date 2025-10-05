@@ -1,11 +1,34 @@
 import { useState, useEffect } from "react";
 
+const QUOTE_STORAGE_KEY = "daily_quote";
+
 export default function QuoteOfTheDay() {
   const [quote, setQuote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+    // Prüfe ob bereits ein Zitat für heute gespeichert ist
+    try {
+      const storedData = localStorage.getItem(QUOTE_STORAGE_KEY);
+      if (storedData) {
+        const { date, quote: savedQuote } = JSON.parse(storedData);
+
+        // Wenn das gespeicherte Zitat von heute ist, verwende es
+        if (date === today) {
+          console.log("Gespeichertes Zitat von heute verwendet");
+          setQuote(savedQuote);
+          setLoading(false);
+          return; // Kein neues Zitat laden
+        }
+      }
+    } catch (err) {
+      console.error("Fehler beim Laden des gespeicherten Zitats:", err);
+    }
+
+    // Lade neues Zitat, wenn keins für heute gespeichert ist
     console.log("Star Trek Quotes: Fetch gestartet");
     fetch("/data/quotes.json")
       .then((res) => {
@@ -22,6 +45,20 @@ export default function QuoteOfTheDay() {
         // Zufälliges Zitat auswählen
         const random = quotes[Math.floor(Math.random() * quotes.length)];
         console.log("Random Quote ausgewählt:", random);
+
+        // Speichere Zitat mit heutigem Datum
+        try {
+          localStorage.setItem(
+            QUOTE_STORAGE_KEY,
+            JSON.stringify({
+              date: today,
+              quote: random,
+            })
+          );
+          console.log("Zitat für heute gespeichert");
+        } catch (err) {
+          console.error("Fehler beim Speichern des Zitats:", err);
+        }
 
         setQuote(random);
         setLoading(false);
@@ -44,11 +81,11 @@ export default function QuoteOfTheDay() {
   if (!quote) return null;
 
   return (
-    <div className="max-w-3xl mx-auto mt-8 mb-12 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md border-l-8 border-[#ff9c00] shadow-2xl rounded-md">
+    <div className="max-w-3xl mx-auto mb-5 p-6 bg-gradient-to-r from-[#1a1a3e]/80 to-[#0a0e27]/80 backdrop-blur-md border-l-8 border-[#ff9c00] shadow-2xl rounded-md">
       <span className="text-2xl text-[#9999ff]">Dein Zitat des Tages: </span>
 
       <p className="text-xl text-[#ffcc99] font-semibold italic">
-        "{quote.zitat}”
+        "{quote.zitat}"
       </p>
       {quote.sprecher && (
         <p className="text-right text-[#9999ff] font-medium mt-2">

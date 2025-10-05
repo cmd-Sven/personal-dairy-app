@@ -295,3 +295,56 @@
 .glitch:hover {
   animation: glitch 0.3s ease-in-out;
 }
+
+@keyframes scan {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes scan-slow {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
+
+.animate-scan-slow {
+  animation: scan-slow 5s linear infinite;
+}
+
+.animate-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}

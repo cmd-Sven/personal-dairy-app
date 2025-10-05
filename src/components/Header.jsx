@@ -1,6 +1,12 @@
 import React from "react";
 
-function Header({ calculateStardate, profile, onProfileClick, onAddEntry }) {
+function Header({
+  calculateStardate,
+  profile,
+  onProfileClick,
+  onAddEntry,
+  onSelfDestruct,
+}) {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-gradient-to-r from-[#0a0e27]/95 via-[#1a1a3e]/95 to-[#0a0e27]/95 border-b-4 border-[#ff9c00] shadow-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,15 +31,24 @@ function Header({ calculateStardate, profile, onProfileClick, onAddEntry }) {
           <div className="flex items-center gap-4">
             {/* Profilname + Avatar */}
             <div
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={onProfileClick}
+              title="Profil bearbeiten"
             >
-              <img
-                src={profile.avatar}
-                alt="Avatar"
-                className="w-10 h-10 rounded-full border-2 border-[#ffcc99] object-cover"
-              />
-              <span className="text-[#ffcc99] font-bold">{profile.name}</span>
+              {profile.avatar ? (
+                <img
+                  src={profile.avatar}
+                  alt="Avatar"
+                  className="w-10 h-10 rounded-full border-2 border-[#ffcc99] object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full border-2 border-[#ffcc99] bg-[#1a1a3e] flex items-center justify-center">
+                  <span className="text-lg">🖖</span>
+                </div>
+              )}
+              <span className="text-[#ffcc99] font-bold">
+                {profile.name || "Captain"}
+              </span>
             </div>
 
             {/* Add Entry Button */}
@@ -58,6 +73,15 @@ function Header({ calculateStardate, profile, onProfileClick, onAddEntry }) {
                 NEUER LOG
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
+            </button>
+
+            {/* Selbstzerstörung Button */}
+            <button
+              onClick={onSelfDestruct}
+              className="px-6 py-2 bg-gradient-to-r from-[#cc6666] to-[#ff6666] text-white rounded-none font-bold text-sm tracking-wider shadow-2xl hover:shadow-[#cc6666]/50 transition-all duration-200 hover:scale-105 active:scale-95 border-2 border-[#ff9999] uppercase"
+              title="Alle Daten löschen"
+            >
+              ⚠ SELBSTZERSTÖRUNG
             </button>
           </div>
         </div>

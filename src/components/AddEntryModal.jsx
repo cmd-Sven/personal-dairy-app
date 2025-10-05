@@ -33,7 +33,6 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
     if (error) setError("");
   };
 
-  //  Mood Change Handler - im Star Trek Stil natürlich
   const handleMoodChange = (moodId) => {
     setFormData((prev) => ({
       ...prev,
@@ -44,23 +43,23 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
 
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError("ERROR: Titel wird benötigt!");
+      setError("FEHLER: Titel wird benötigt!");
       return false;
     }
     if (!formData.date) {
-      setError("ERROR: Sternzeit wird benötigt!");
+      setError("FEHLER: Sternzeit wird benötigt!");
       return false;
     }
     if (!formData.imageUrl.trim()) {
-      setError("ERROR: Captian, ein Bild wird benötigt!");
+      setError("FEHLER: Captain, ein Bild wird benötigt!");
       return false;
     }
     if (!formData.content.trim()) {
-      setError("ERROR: Log entry content required");
+      setError("FEHLER: Log-Inhalt wird benötigt!");
       return false;
     }
     if (!formData.mood) {
-      setError("ERROR: Captain's mood status required");
+      setError("FEHLER: Captain-Status wird benötigt!");
       return false;
     }
     return true;
@@ -73,7 +72,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
 
     if (checkEntryExists(formData.date)) {
       setError(
-        "ALERT: Log entry already exists for this stardate. Database conflict detected."
+        "ALARM: Log-Eintrag für diese Sternzeit existiert bereits. Datenbankkonflikt erkannt."
       );
       return;
     }
@@ -99,10 +98,10 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
           <div className="flex items-center justify-between relative z-10">
             <div>
               <h2 className="text-4xl font-black tracking-wider mb-1 uppercase">
-                NEW LOG ENTRY
+                NEUER LOG-EINTRAG
               </h2>
               <p className="text-sm font-bold tracking-widest uppercase opacity-80">
-                CAPTAIN'S PERSONAL LOG • RECORDING ACTIVE
+                CAPTAINS LOGBUCH • AUFNAHME AKTIV
               </p>
             </div>
             <button
@@ -157,7 +156,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="title"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              LOG ENTRY TITLE *
+              LOG-TITEL *
             </label>
             <input
               type="text"
@@ -165,7 +164,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="Enter mission log title..."
+              placeholder="Missions-Titel eingeben..."
               className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#ff9c00] focus:ring-4 focus:ring-[#ff9c00]/30 transition-all outline-none text-[#ffcc99] font-bold text-lg placeholder:text-[#9999ff]/40 backdrop-blur-sm"
             />
           </div>
@@ -176,7 +175,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="date"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              STARDATE *
+              STERNZEIT *
             </label>
             <input
               type="date"
@@ -189,7 +188,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
             />
           </div>
 
-          {/* NEU: Mood Selector */}
+          {/* Mood Selector */}
           <MoodSelector
             selectedMood={formData.mood}
             onMoodChange={handleMoodChange}
@@ -201,7 +200,7 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="imageUrl"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              VISUAL DATA LINK *
+              BILD-URL *
             </label>
             <input
               type="url"
@@ -209,19 +208,19 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               name="imageUrl"
               value={formData.imageUrl}
               onChange={handleChange}
-              placeholder="https://image-database.starfleet/visual.jpg"
+              placeholder="https://bild-datenbank.sternenflotte/visual.jpg"
               className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#ff9c00] focus:ring-4 focus:ring-[#ff9c00]/30 transition-all outline-none text-[#ffcc99] font-bold text-lg placeholder:text-[#9999ff]/40 backdrop-blur-sm"
             />
             {formData.imageUrl && (
               <div className="mt-4 rounded-none overflow-hidden border-4 border-[#9999ff]/50 relative">
                 <img
                   src={formData.imageUrl}
-                  alt="Preview"
+                  alt="Vorschau"
                   className="w-full h-56 object-cover"
                   onError={(e) => (e.target.style.display = "none")}
                 />
                 <div className="absolute top-3 left-3 px-3 py-1 bg-[#ff9c00] text-[#0a0e27] text-xs font-black uppercase tracking-wider border-2 border-[#ffcc99]">
-                  PREVIEW
+                  VORSCHAU
                 </div>
               </div>
             )}
@@ -233,14 +232,14 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               htmlFor="content"
               className="block text-sm font-black text-[#ff9c00] uppercase tracking-widest"
             >
-              LOG ENTRY CONTENT *
+              LOG-INHALT *
             </label>
             <textarea
               id="content"
               name="content"
               value={formData.content}
               onChange={handleChange}
-              placeholder="Captain's Log: Stardate... Begin recording..."
+              placeholder="Captain's Log: Sternzeit... Aufnahme beginnt..."
               rows="7"
               className="w-full px-5 py-4 bg-[#0a0e27]/50 border-2 border-[#9999ff]/50 rounded-none focus:border-[#ff9c00] focus:ring-4 focus:ring-[#ff9c00]/30 transition-all outline-none resize-none text-[#ffcc99] font-medium text-lg leading-relaxed placeholder:text-[#9999ff]/40 backdrop-blur-sm"
             />
@@ -253,13 +252,13 @@ function AddEntryModal({ isOpen, onClose, onEntryAdded, prefilledDate }) {
               onClick={handleClose}
               className="flex-1 px-8 py-4 border-4 border-[#9999ff]/50 text-[#9999ff] rounded-none font-black text-lg uppercase tracking-wider hover:bg-[#9999ff]/10 transition-all hover:border-[#9999ff] hover:scale-105"
             >
-              ABORT
+              ABBRECHEN
             </button>
             <button
               type="submit"
               className="flex-1 px-8 py-4 bg-gradient-to-r from-[#ff9c00] to-[#cc6666] text-[#0a0e27] rounded-none font-black text-lg uppercase tracking-wider shadow-2xl hover:shadow-[#ff9c00]/80 transition-all hover:scale-105 active:scale-95 border-4 border-[#ffcc99] relative overflow-hidden"
             >
-              <span className="relative z-10">RECORD LOG</span>
+              <span className="relative z-10">LOG AUFZEICHNEN</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent data-stream"></div>
             </button>
           </div>
