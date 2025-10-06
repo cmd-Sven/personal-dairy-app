@@ -1,1 +1,0 @@
-// Liste alle Tagebuch Einträge

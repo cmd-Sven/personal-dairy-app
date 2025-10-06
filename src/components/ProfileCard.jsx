@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useProfile } from "../hooks/useProfile";
 
-export default function ProfileCard({ onClose }) {
+export default function ProfileCard() {
   const { profile, saveProfile, RACES, ATTRIBUTES } = useProfile();
   
   const [step, setStep] = useState(1);
@@ -88,7 +88,9 @@ export default function ProfileCard({ onClose }) {
     const success = saveProfile(localProfile);
     if (success) {
       alert("Profil erfolgreich gespeichert!");
-      if (onClose) onClose();
+       setTimeout(() => {
+      window.location.reload();
+    }, 500);
     } else {
       alert("Fehler beim Speichern des Profils!");
     }
